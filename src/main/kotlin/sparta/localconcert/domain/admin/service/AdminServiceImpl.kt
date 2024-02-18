@@ -4,6 +4,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import sparta.localconcert.domain.admin.dto.request.SignUpWithLoginRequest
+import sparta.localconcert.domain.admin.dto.request.WithdrawRequest
 import sparta.localconcert.domain.admin.dto.response.LoginResponse
 import sparta.localconcert.domain.admin.dto.response.SignUpResponse
 import sparta.localconcert.domain.admin.model.Admin
@@ -39,5 +40,18 @@ class AdminServiceImpl(
         return LoginResponse(
             accessToken = jwtPlugin.generateAccessToken(email = request.email)
         )
+    }
+
+    override fun withdraw(email: String, request: WithdrawRequest) {
+        val admin = adminRepository.findByEmail(email)
+
+        // 비밀번호 재입력 받은 후 탈퇴 진행
+        if (admin != null) {
+            if (!passwordEncoder.matches(admin.password, request.password)) {
+                throw IllegalArgumentException("입력하신 비밀번호와 기존 비밀번호가 일치하지 않습니다.")
+            } else {
+                adminRepository.delete(admin)
+            }
+        }
     }
 }
