@@ -3,7 +3,6 @@ package sparta.localconcert.domain.admin.service
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import sparta.localconcert.domain.admin.dto.request.SignUpWithLoginRequest
-import sparta.localconcert.domain.admin.dto.response.AdminResponse
 import sparta.localconcert.domain.admin.dto.response.LoginResponse
 import sparta.localconcert.domain.admin.dto.response.SignUpResponse
 import sparta.localconcert.domain.admin.model.Admin
@@ -16,7 +15,7 @@ class AdminServiceImpl(
 
     @Transactional
     override fun signUp(email: String, request: SignUpWithLoginRequest): SignUpResponse {
-        val admin = Admin (
+        val admin = Admin(
             email = request.email,
             password = request.password
         )
