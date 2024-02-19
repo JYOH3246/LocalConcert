@@ -1,5 +1,6 @@
 package sparta.localconcert.domain.admin.service
 
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -8,12 +9,15 @@ import sparta.localconcert.domain.admin.dto.request.WithdrawRequest
 import sparta.localconcert.domain.admin.dto.response.LoginResponse
 import sparta.localconcert.domain.admin.dto.response.SignUpResponse
 import sparta.localconcert.domain.admin.model.Admin
+import sparta.localconcert.domain.admin.model.AdminRefreshToken
+import sparta.localconcert.domain.admin.repository.AdminRefreshTokenRepository
 import sparta.localconcert.domain.admin.repository.AdminRepository
 import sparta.localconcert.global.security.jwt.JwtPlugin
 
 @Service
 class AdminServiceImpl(
     private val adminRepository: AdminRepository,
+    private val adminRefreshTokenRepository: AdminRefreshTokenRepository,
     private val passwordEncoder: PasswordEncoder,
     private val jwtPlugin: JwtPlugin
 ) : AdminService {
@@ -37,13 +41,13 @@ class AdminServiceImpl(
             throw IllegalArgumentException("비밀번호가 일치하지 않습니다.")
         }
 
-        return LoginResponse(
-            accessToken = jwtPlugin.generateAccessToken(
-                adminId = admin.id!!,
-                email = request.email
-            ),
-            "로그인되었습니다."
-        )
+        val accessToken = jwtPlugin.generateAccessToken(admin.id!!, admin.email)
+        val refreshToken = jwtPlugin.refrechAccessToken(adminId = admin.id, email = admin.email)
+
+        adminRefreshTokenRepository.findByIdOrNull(admin.id)?.updateRefreshToken(refreshToken)
+            ?: adminRefreshTokenRepository.save(AdminRefreshToken(refreshToken, admin))
+
+        return LoginResponse(accessToken, refreshToken, "로그인되었습니다.")
     }
 
     override fun withdraw(adminId: Long, email: String, request: WithdrawRequest) {
