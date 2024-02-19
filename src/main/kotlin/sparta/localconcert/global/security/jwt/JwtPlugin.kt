@@ -1,13 +1,11 @@
 package sparta.localconcert.global.security.jwt
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jws
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
-import sparta.localconcert.domain.admin.model.AdminRefreshToken
 import sparta.localconcert.domain.admin.repository.AdminRefreshTokenRepository
 import java.nio.charset.StandardCharsets
 import java.time.Duration
