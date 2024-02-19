@@ -1,5 +1,5 @@
 package sparta.localconcert.domain.admin.dto.request
 
-data class WithdrawRequest (
+data class WithdrawRequest(
     val password: String
 )

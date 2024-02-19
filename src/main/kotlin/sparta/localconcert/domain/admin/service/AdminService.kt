@@ -7,9 +7,9 @@ import sparta.localconcert.domain.admin.dto.response.SignUpResponse
 
 interface AdminService {
 
-    fun signUp(email: String, request: SignUpWithLoginRequest): SignUpResponse
+    fun signUp(request: SignUpWithLoginRequest): SignUpResponse
 
     fun login(request: SignUpWithLoginRequest): LoginResponse
 
-    fun withdraw(email: String, request: WithdrawRequest)
+    fun withdraw(adminId: Long, email: String, request: WithdrawRequest)
 }

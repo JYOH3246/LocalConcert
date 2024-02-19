@@ -2,8 +2,8 @@ package sparta.localconcert.global.security.jwt
 
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jws
-import io.jsonwebtoken.security.Keys
 import io.jsonwebtoken.Jwts
+import io.jsonwebtoken.security.Keys
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import java.nio.charset.StandardCharsets
@@ -25,11 +25,11 @@ class JwtPlugin(
         }
     }
 
-    fun generateAccessToken(email: String): String {
-        return generateToken(email, Duration.ofHours(accessTokenExpirationHour))
+    fun generateAccessToken(adminId: Long, email: String): String {
+        return generateToken(adminId, email, Duration.ofHours(accessTokenExpirationHour))
     }
 
-    private fun generateToken(email: String, expirationPeriod: Duration): String {
+    private fun generateToken(adminId: Long, email: String, expirationPeriod: Duration): String {
         val claims: Claims = Jwts.claims()
             .add(mapOf("email" to email))
             .build()
@@ -38,6 +38,7 @@ class JwtPlugin(
         val now = Instant.now()
 
         return Jwts.builder()
+            .subject(adminId.toString())
             .issuer(issuer)
             .issuedAt(Date.from(Instant.now()))
             .expiration(Date.from(now.plus(expirationPeriod)))

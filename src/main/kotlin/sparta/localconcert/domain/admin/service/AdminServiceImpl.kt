@@ -19,14 +19,14 @@ class AdminServiceImpl(
 ) : AdminService {
 
     @Transactional
-    override fun signUp(email: String, request: SignUpWithLoginRequest): SignUpResponse {
+    override fun signUp(request: SignUpWithLoginRequest): SignUpResponse {
         val admin = Admin(
             email = request.email,
             password = passwordEncoder.encode(request.password)
         )
         adminRepository.save(admin)
 
-        return SignUpResponse(email)
+        return SignUpResponse(message = "회원가입되었습니다.")
     }
 
     @Transactional
@@ -38,16 +38,20 @@ class AdminServiceImpl(
         }
 
         return LoginResponse(
-            accessToken = jwtPlugin.generateAccessToken(email = request.email)
+            accessToken = jwtPlugin.generateAccessToken(
+                adminId = admin.id!!,
+                email = request.email
+            ),
+            "로그인되었습니다."
         )
     }
 
-    override fun withdraw(email: String, request: WithdrawRequest) {
+    override fun withdraw(adminId: Long, email: String, request: WithdrawRequest) {
         val admin = adminRepository.findByEmail(email)
 
         // 비밀번호 재입력 받은 후 탈퇴 진행
         if (admin != null) {
-            if (!passwordEncoder.matches(admin.password, request.password)) {
+            if (!passwordEncoder.matches(request.password, admin.password)) {
                 throw IllegalArgumentException("입력하신 비밀번호와 기존 비밀번호가 일치하지 않습니다.")
             } else {
                 adminRepository.delete(admin)
