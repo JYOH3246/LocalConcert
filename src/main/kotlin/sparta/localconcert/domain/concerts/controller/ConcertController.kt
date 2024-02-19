@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import sparta.localconcert.domain.concerts.dto.request.AddConcertRequest
+import sparta.localconcert.domain.concerts.dto.request.UpdateConcertRequest
 import sparta.localconcert.domain.concerts.dto.response.FindConcertResponse
 import sparta.localconcert.domain.concerts.dto.response.SearchConcertResponse
 import sparta.localconcert.domain.concerts.service.ConcertService
@@ -44,8 +45,11 @@ class ConcertController(
     }
 
     @PutMapping("/{concertId}")
-    fun updateConcert(@PathVariable concertId: Long){
-        //코드리팩토링 고민 중
+    fun updateConcert(@PathVariable concertId: Long, request: UpdateConcertRequest):ResponseEntity<String>{
+        concertService.updateConcert(request, concertId)
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body("수정이 완료되었습니다.")
     }
 
     @DeleteMapping("/{concertId}")
