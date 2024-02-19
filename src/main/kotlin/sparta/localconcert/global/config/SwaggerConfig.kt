@@ -12,8 +12,8 @@ class SwaggerConfig {
     fun openAPI(): OpenAPI = OpenAPI()
         .info(
             Info()
-                .title("todoList API")
-                .description("todoList API schema")
+                .title("localConcert API")
+                .description("localConcert API schema")
                 .version("1.0.0")
         )
 }
