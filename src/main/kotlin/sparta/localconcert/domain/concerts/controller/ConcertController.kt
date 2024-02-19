@@ -23,6 +23,7 @@ class ConcertController(
             .body(concertService.searchConcert(title))
     }
 
+    @LogExecutionTime
     @GetMapping("/v2")
     fun searchCacheConcert(@RequestParam(name = "title") title: String) : ResponseEntity<List<SearchConcertResponse>>{
         return ResponseEntity
