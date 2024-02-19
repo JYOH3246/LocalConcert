@@ -1,5 +1,6 @@
 package sparta.localconcert.domain.concerts.service
 
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -14,7 +15,6 @@ import sparta.localconcert.domain.concerts.repository.ConcertRepository
 @Service
 class ConcertServiceImpl(
     private val concertRepository: ConcertRepository,
-
     ) : ConcertService {
 
     @Transactional
@@ -35,9 +35,14 @@ class ConcertServiceImpl(
             ?: throw Exception("임시처리입니다.")
         concertRepository.delete(concert)
     }
-
     @Transactional(readOnly = true)
     override fun searchConcert(title: String): List<SearchConcertResponse> {
+        return concertRepository.searchConcertByTitle(title).map { SearchConcertResponse.fromEntity(it) }
+    }
+
+    @Transactional(readOnly = true)
+    @Cacheable(value = ["concert"], key = "#title")
+    override fun searchCacheConcert(title: String): List<SearchConcertResponse> {
         return concertRepository.searchConcertByTitle(title).map { SearchConcertResponse.fromEntity(it) }
     }
 
