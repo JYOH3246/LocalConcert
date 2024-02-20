@@ -13,7 +13,7 @@ interface ConcertService {
 
     fun deleteConcert(concertId: Long)
 
-    fun searchConcert(title: String): List<SearchConcertResponse>
+    fun searchConcert(keyword: String): List<SearchConcertResponse>
 
     fun searchCacheConcert(title: String): List<SearchConcertResponse>
 

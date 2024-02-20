@@ -17,10 +17,10 @@ class ConcertController(
 ) {
 
     @GetMapping()
-    fun searchConcert(@RequestParam(name = "title") title: String) : ResponseEntity<List<SearchConcertResponse>>{
+    fun searchConcert(@RequestParam(name = "keyword") keyword: String) : ResponseEntity<List<SearchConcertResponse>>{
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(concertService.searchConcert(title))
+            .body(concertService.searchConcert(keyword))
     }
 
     @LogExecutionTime
