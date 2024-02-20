@@ -11,11 +11,13 @@ import sparta.localconcert.domain.concerts.dto.response.SearchConcertResponse
 import sparta.localconcert.domain.concerts.model.Concert
 import sparta.localconcert.domain.concerts.repository.ConcertRepository
 import sparta.localconcert.domain.concerts.repository.RedisConcertRepository
+import sparta.localconcert.global.config.ModuleConfig
 
 @Service
 class ConcertServiceImpl(
     private val concertRepository: ConcertRepository,
-    private val redisConcertRepository: RedisConcertRepository
+    private val redisConcertRepository: RedisConcertRepository,
+    private val objectMapper: ModuleConfig
 ) : ConcertService {
 
     @Transactional
@@ -54,10 +56,13 @@ class ConcertServiceImpl(
     override fun searchCacheConcert(title: String): List<SearchConcertResponse> {
         saveRanking(title)
         if (redisConcertRepository.exists("keyword::${title}")) {
-            val searching: List<Concert> = mutableListOf()
-            redisConcertRepository.saveZSetJsonData("keyword::${title}", searching)
-            return searching.map { SearchConcertResponse.fromEntity(it) }
-            TODO(/*Redis에서 JSON 데이터를 가져와서 뿌려주기*/)
+            val searching = redisConcertRepository.getZSetValue("keyword::${title}")
+            val concertList : MutableList<Concert> = mutableListOf()
+            for (element in searching) {
+                redisConcertRepository.saveZSetData("keyword::${title}", element)
+                concertList+=objectMapper.objectMapper().readValue(element.toString(),Concert::class.java)
+            }
+            return concertList.map { SearchConcertResponse.fromEntity(it) }
         } else {
             val searching = concertRepository.searchConcertByTitle(title)
             redisConcertRepository.saveZSetJsonData("keyword::${title}", searching)

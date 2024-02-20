@@ -4,6 +4,7 @@ package sparta.localconcert.domain.concerts.repository
 import org.springframework.data.redis.connection.zset.Aggregate
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.stereotype.Repository
+import sparta.localconcert.domain.concerts.dto.response.SearchConcertResponse
 import sparta.localconcert.global.config.ModuleConfig
 
 
@@ -31,9 +32,18 @@ class RedisConcertRepository(
         return result
     }
 
-    fun saveZSetData(key: String, value: String) {
+    fun saveZSetData(key: String, value: Any) {
         redisTemplate.opsForZSet().addIfAbsent(key, value, 0.0)
         redisTemplate.opsForZSet().incrementScore(key, value, 1.0)
+    }
+    fun getZSetValue(key: String) : Set<Any> {
+        redisTemplate.opsForZSet().range(key,0,-1) ?: throw IllegalArgumentException("없음")
+        return redisTemplate.opsForZSet().range(key,0,-1) ?: throw IllegalArgumentException("없음")
+        /*
+        val a = redisTemplate.opsForZSet().range(key,0,-1) ?: throw IllegalArgumentException("없음")
+        val json = mapper.readValue(a,SearchConcertResponse::class.java)
+
+         */
     }
 
     fun saveZSetJsonData(key: String, data: List<Any>) {
