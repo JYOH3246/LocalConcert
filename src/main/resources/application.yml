@@ -1,1 +1,17 @@
+spring:
+  datasource:
+    url: jdbc:h2:tcp://localhost/~/test
+    username: sa
+    password:
+logging:
+  level:
+    org:
+      springframework:
+        security: debug
+auth:
+  jwt:
+    issuer: team.sparta.localconcert.com
+    secret: PO4c8z41Hia5gJG3oeuFJMRYBB4Ws4aZ
+    accessTokenExpirationHour: 1
+    refreshTokenExpirationHour: 24
 
