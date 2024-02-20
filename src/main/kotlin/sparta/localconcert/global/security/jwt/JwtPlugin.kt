@@ -31,13 +31,6 @@ class JwtPlugin(
         }
     }
 
-//    fun recreatRefreshToken(adminId: Long, email: String, count: Int): String {
-//        val refreshToken = adminRefreshTokenRepository.findByAdminIdWithReissueCountLessThan(reissueLimit, count)
-//            ?: throw IllegalArgumentException("토큰 생성 실패")
-//        refreshToken.increaseReissueCount()
-//        return generateAccessToken(adminId, email)
-//    }
-
     fun refrechAccessToken(adminId: Long, email: String): String {
         return generateRefreshToken(adminId, email, Duration.ofHours(refreshTokenExpirationHour))
     }

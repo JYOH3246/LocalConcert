@@ -11,7 +11,7 @@ class AdminRefreshToken(
 
     @ManyToOne
     @JoinColumn(name = "id")
-    var adminId: Admin,
+    var admin: Admin,
 
 ) {
 

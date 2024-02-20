@@ -51,15 +51,17 @@ class AdminServiceImpl(
     }
 
     override fun withdraw(adminId: Long, email: String, request: WithdrawRequest) {
-        val admin = adminRepository.findByEmail(email)
+        val admin = adminRepository.findByIdOrNull(adminId)
 
         // 비밀번호 재입력 받은 후 탈퇴 진행
         if (admin != null) {
             if (!passwordEncoder.matches(request.password, admin.password)) {
                 throw IllegalArgumentException("입력하신 비밀번호와 기존 비밀번호가 일치하지 않습니다.")
             } else {
+                // 테이블에 저장된 토큰과 어드민 계정 함께 삭제
                 adminRepository.delete(admin)
             }
+
         }
     }
 }

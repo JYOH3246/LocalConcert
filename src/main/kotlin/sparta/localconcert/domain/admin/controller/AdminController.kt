@@ -35,8 +35,11 @@ class AdminController(
         @AuthenticationPrincipal userPrincipal: UserPrincipal,
         @RequestBody request: WithdrawRequest
     ): ResponseEntity<Unit> {
-        adminService.withdraw(adminId, userPrincipal.email, request)
-
+        if (userPrincipal.adminId != adminId) {
+            adminService.withdraw(adminId, userPrincipal.email, request)
+        } else {
+            throw IllegalArgumentException("현재 로그인한 사용자의 계정은 삭제할 수 없습니다.")
+        }
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
 
