@@ -37,9 +37,15 @@ class ConcertServiceImpl(
         concertRepository.delete(concert)
     }
 
-    @Transactional(readOnly = true)
-    override fun searchConcert(title: String): List<SearchConcertResponse> {
-        return concertRepository.searchConcertByTitle(title).map { SearchConcertResponse.fromEntity(it) }
+
+    @Transactional
+    override fun searchConcert(keyword: String): List<SearchConcertResponse> {
+        val concerts = concertRepository.searchConcertByTitle(keyword)
+        concerts.forEach {
+            it.searches += 1
+            concertRepository.save(it)
+        }
+        return concerts.map { SearchConcertResponse.fromEntity(it) }
     }
 
     // Local Cache to Redis
