@@ -1,1 +1,18 @@
-
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/
+    username: postgres
+    password: FrBrUkwv2ek0nx10
+  jpa:
+    open-in-view: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: false
+        highlight_sql: true
+  data:
+    redis:
+      host: localhost
+      port: 6379
