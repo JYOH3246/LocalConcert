@@ -17,7 +17,7 @@ class ConcertController(
 ) {
 
     @GetMapping()
-    fun searchConcert(@RequestParam(name = "title") title: String) : ResponseEntity<List<SearchConcertResponse>>{
+    fun searchConcert(@RequestParam(name = "title") title: String): ResponseEntity<List<SearchConcertResponse>> {
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(concertService.searchConcert(title))
@@ -25,21 +25,21 @@ class ConcertController(
 
     @LogExecutionTime
     @GetMapping("/v2")
-    fun searchCacheConcert(@RequestParam(name = "title") title: String) : ResponseEntity<List<SearchConcertResponse>>{
+    fun searchCacheConcert(@RequestParam(name = "title") title: String): ResponseEntity<List<SearchConcertResponse>> {
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(concertService.searchCacheConcert(title))
     }
 
     @GetMapping("/{concertId}")
-    fun findConcert(@PathVariable concertId: Long): ResponseEntity<FindConcertResponse>{
+    fun findConcert(@PathVariable concertId: Long): ResponseEntity<FindConcertResponse> {
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(concertService.findConcert(concertId))
     }
 
     @PostMapping()
-    fun addConcert(request: AddConcertRequest):ResponseEntity<String>{
+    fun addConcert(request: AddConcertRequest): ResponseEntity<String> {
         concertService.addConcert(request)
         return ResponseEntity
             .status(HttpStatus.CREATED)
@@ -47,7 +47,7 @@ class ConcertController(
     }
 
     @PutMapping("/{concertId}")
-    fun updateConcert(@PathVariable concertId: Long, request: UpdateConcertRequest):ResponseEntity<String>{
+    fun updateConcert(@PathVariable concertId: Long, request: UpdateConcertRequest): ResponseEntity<String> {
         concertService.updateConcert(request, concertId)
         return ResponseEntity
             .status(HttpStatus.OK)
@@ -55,7 +55,7 @@ class ConcertController(
     }
 
     @DeleteMapping("/{concertId}")
-    fun deleteConcert(@PathVariable concertId: Long):ResponseEntity<Void>{
+    fun deleteConcert(@PathVariable concertId: Long): ResponseEntity<Void> {
         concertService.deleteConcert(concertId)
         return ResponseEntity
             .status(HttpStatus.OK)
