@@ -80,6 +80,9 @@ class ConcertServiceImpl(
     fun saveRanking(title: String) {
         return redisConcertRepository.saveZSetData("searchRanking", title)
     }
+    override fun searchRanking(): Set<Any> {
+        return redisConcertRepository.getSearchRanking("searchRanking")
+    }
 }
 
 fun Concert.update(request: UpdateConcertRequest) {
