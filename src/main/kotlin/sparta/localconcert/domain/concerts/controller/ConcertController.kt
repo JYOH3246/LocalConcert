@@ -2,19 +2,13 @@ package sparta.localconcert.domain.concerts.controller
 
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import sparta.localconcert.domain.concerts.dto.request.AddConcertRequest
 import sparta.localconcert.domain.concerts.dto.request.UpdateConcertRequest
 import sparta.localconcert.domain.concerts.dto.response.FindConcertResponse
 import sparta.localconcert.domain.concerts.dto.response.SearchConcertResponse
 import sparta.localconcert.domain.concerts.service.ConcertService
+import sparta.localconcert.global.aop.LogExecutionTime
 
 @RequestMapping("/concerts")
 @RestController
@@ -27,6 +21,14 @@ class ConcertController(
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(concertService.searchConcert(keyword))
+    }
+
+    @LogExecutionTime
+    @GetMapping("/v2")
+    fun searchCacheConcert(@RequestParam(name = "title") title: String) : ResponseEntity<List<SearchConcertResponse>>{
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(concertService.searchCacheConcert(title))
     }
 
     @GetMapping("/{concertId}")
