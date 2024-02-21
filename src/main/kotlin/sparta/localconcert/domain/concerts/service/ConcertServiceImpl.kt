@@ -1,5 +1,6 @@
 package sparta.localconcert.domain.concerts.service
 
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -41,8 +42,8 @@ class ConcertServiceImpl(
 
 
     @Transactional
-    override fun searchConcert(keyword: String): List<SearchConcertResponse> {
-        val concerts = concertRepository.searchConcertByTitle(keyword)
+    override fun searchConcert(keyword: String, page: Int, size: Int): List<SearchConcertResponse> {
+        val concerts = concertRepository.searchConcertByTitle(keyword, page, size)
         concerts.forEach {
             it.searches += 1
             concertRepository.save(it)
@@ -52,7 +53,7 @@ class ConcertServiceImpl(
 
     // Local Cache to Redis
     @Transactional(readOnly = true)
-    override fun searchCacheConcert(keyword: String): List<SearchConcertResponse> {
+    override fun searchCacheConcert(keyword: String, page: Int, size: Int): List<SearchConcertResponse> {
         saveRanking(keyword)
         if (redisConcertRepository.exists("keyword::${keyword}")) {
             val searching = redisConcertRepository.getZSetValue("keyword::${keyword}")

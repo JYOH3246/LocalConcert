@@ -13,9 +13,9 @@ interface ConcertService {
 
     fun deleteConcert(concertId: Long)
 
-    fun searchConcert(keyword: String): List<SearchConcertResponse>
+    fun searchConcert(keyword: String, page: Int, size: Int): List<SearchConcertResponse>
 
-    fun searchCacheConcert(keyword: String): List<SearchConcertResponse>
+    fun searchCacheConcert(keyword: String, page: Int, size: Int): List<SearchConcertResponse>
 
     fun findConcert(concertId: Long): FindConcertResponse
     fun searchRanking(): Set<Any>

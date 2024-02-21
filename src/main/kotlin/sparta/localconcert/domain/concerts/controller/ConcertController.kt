@@ -17,18 +17,26 @@ class ConcertController(
 ) {
 
     @GetMapping()
-    fun searchConcert(@RequestParam(name = "keyword") keyword: String): ResponseEntity<List<SearchConcertResponse>> {
+    fun searchConcert(
+        @RequestParam(name = "keyword") keyword: String,
+        @RequestParam(name = "page", defaultValue = "1") page: Int,
+        @RequestParam(name = "size", defaultValue = "10") size: Int
+    ): ResponseEntity<List<SearchConcertResponse>> {
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(concertService.searchConcert(keyword))
+            .body(concertService.searchConcert(keyword, page, size))
     }
 
     @LogExecutionTime
     @GetMapping("/v2")
-    fun searchCacheConcert(@RequestParam(name = "title") title: String): ResponseEntity<List<SearchConcertResponse>> {
+    fun searchCacheConcert(
+        @RequestParam(name = "keyword") keyword: String,
+        @RequestParam(name = "page", defaultValue = "1") page: Int,
+        @RequestParam(name = "size", defaultValue = "10") size: Int
+    ): ResponseEntity<List<SearchConcertResponse>> {
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(concertService.searchCacheConcert(title))
+            .body(concertService.searchCacheConcert(keyword, page, size))
     }
 
     @GetMapping("/{concertId}")

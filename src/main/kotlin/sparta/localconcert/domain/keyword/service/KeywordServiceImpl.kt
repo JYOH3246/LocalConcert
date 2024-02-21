@@ -15,7 +15,6 @@ class KeywordServiceImpl(
     override fun incrementKeywordCount(keyword: String) {
         val keywordEntity = keywordRepository.findByKeyword(keyword)
             ?: Keyword(keyword = keyword) // 새 Keyword 엔티티 생성
-
         keywordEntity.count += 1
         keywordRepository.save(keywordEntity)
     }
