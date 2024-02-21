@@ -23,8 +23,8 @@ data class FindConcertResponse(
     val ticketUrl: String,
     val address: String
 
-){
-    companion object{
+) {
+    companion object {
         fun fromEntity(concert: Concert) = FindConcertResponse(
             id = concert.id,
             title = concert.title,
