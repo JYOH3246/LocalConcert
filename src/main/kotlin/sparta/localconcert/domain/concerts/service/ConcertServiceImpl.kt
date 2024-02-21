@@ -1,6 +1,8 @@
 package sparta.localconcert.domain.concerts.service
 
 import org.springframework.cache.annotation.Cacheable
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -11,6 +13,7 @@ import sparta.localconcert.domain.concerts.dto.response.FindConcertResponse
 import sparta.localconcert.domain.concerts.dto.response.SearchConcertResponse
 import sparta.localconcert.domain.concerts.model.Concert
 import sparta.localconcert.domain.concerts.repository.ConcertRepository
+
 
 @Service
 class ConcertServiceImpl(
@@ -37,9 +40,9 @@ class ConcertServiceImpl(
     }
 
 
-    @Transactional
-    override fun searchConcert(keyword: String, page: Int, size: Int): List<SearchConcertResponse> {
-        val concerts = concertRepository.searchConcertByTitle(keyword, page, size)
+    @Transactional(readOnly = true)
+    override fun searchConcert(keyword: String, pageable: Pageable): Page<SearchConcertResponse> {
+        val concerts = concertRepository.searchConcertByTitle(keyword, pageable)
         concerts.forEach {
             it.searches += 1
             concertRepository.save(it)
@@ -49,8 +52,8 @@ class ConcertServiceImpl(
 
     @Transactional(readOnly = true)
     @Cacheable(value = ["concert"], key = "#keyword")
-    override fun searchCacheConcert(keyword: String, page: Int, size: Int): List<SearchConcertResponse> {
-        return concertRepository.searchConcertByTitle(keyword, page, size).map { SearchConcertResponse.fromEntity(it) }
+    override fun searchCacheConcert(keyword: String, pageable: Pageable): Page<SearchConcertResponse> {
+        return concertRepository.searchConcertByTitle(keyword, pageable).map { SearchConcertResponse.fromEntity(it) }
     }
 
     @Transactional
