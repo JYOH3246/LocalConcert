@@ -11,13 +11,13 @@ import sparta.localconcert.domain.concerts.dto.response.SearchConcertResponse
 import sparta.localconcert.domain.concerts.model.Concert
 import sparta.localconcert.domain.concerts.repository.ConcertRepository
 import sparta.localconcert.domain.concerts.repository.RedisConcertRepository
-import sparta.localconcert.global.config.ModuleConfig
+import sparta.localconcert.global.objectmapper.MapperConfig
 
 @Service
 class ConcertServiceImpl(
     private val concertRepository: ConcertRepository,
     private val redisConcertRepository: RedisConcertRepository,
-    private val objectMapper: ModuleConfig
+    private val mapper: MapperConfig,
 ) : ConcertService {
 
     @Transactional
@@ -52,15 +52,15 @@ class ConcertServiceImpl(
 
     // Local Cache to Redis
     @Transactional(readOnly = true)
-    // @Cacheable(value = ["concert"], key = "#title")
     override fun searchCacheConcert(title: String): List<SearchConcertResponse> {
         saveRanking(title)
         if (redisConcertRepository.exists("keyword::${title}")) {
             val searching = redisConcertRepository.getZSetValue("keyword::${title}")
             val concertList : MutableList<Concert> = mutableListOf()
             for (element in searching) {
+                val mapper = mapper.objectMapper()
                 redisConcertRepository.saveZSetData("keyword::${title}", element)
-                concertList+=objectMapper.objectMapper().readValue(element.toString(),Concert::class.java)
+                concertList+=mapper.readValue(element.toString(),Concert::class.java)
             }
             return concertList.map { SearchConcertResponse.fromEntity(it) }
         } else {
