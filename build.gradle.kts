@@ -8,7 +8,6 @@ plugins {
 	kotlin("plugin.jpa") version "1.9.22"
 	kotlin("plugin.serialization") version "1.9.22"
 	kotlin("kapt") version "1.8.22"
-
 }
 
 group = "sparta"
@@ -23,31 +22,37 @@ repositories {
 }
 val queryDslVersion = "5.0.0"
 
+val queryDslVersion = "5.0.0"
+
 dependencies {
-	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-	implementation("org.springframework.boot:spring-boot-starter-data-redis")
-	implementation("org.springframework.boot:spring-boot-starter-web")
-	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
-	implementation("org.springframework.boot:spring-boot-starter-aop")
-	implementation("org.springframework.boot:spring-boot-starter-cache")
-	implementation("org.jetbrains.kotlin:kotlin-reflect")
-	implementation("io.swagger.core.v3:swagger-annotations:2.2.20")
-	implementation("com.querydsl:querydsl-jpa:$queryDslVersion:jakarta")
-	runtimeOnly("org.postgresql:postgresql")
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
-	kapt("com.querydsl:querydsl-apt:$queryDslVersion:jakarta")
-    // JWT
-    implementation("io.jsonwebtoken:jjwt-api:0.12.3")
-    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.3")
-    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.3")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
+	  implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	  implementation("org.springframework.boot:spring-boot-starter-data-redis")
+	  implementation("org.springframework.boot:spring-boot-starter-web")
+	  implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+	  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
+	  implementation("org.springframework.boot:spring-boot-starter-aop")
+	  implementation("org.springframework.boot:spring-boot-starter-cache")
+	  implementation("org.jetbrains.kotlin:kotlin-reflect")
+	  implementation("io.swagger.core.v3:swagger-annotations:2.2.20")
+	  runtimeOnly("org.postgresql:postgresql")
+	  testImplementation("org.springframework.boot:spring-boot-starter-test")
     // security
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.thymeleaf.extras:thymeleaf-extras-springsecurity6")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+    // querydsl
+    implementation("com.querydsl:querydsl-jpa:$queryDslVersion:jakarta")
+    kapt("com.querydsl:querydsl-apt:$queryDslVersion:jakarta")
+
+    // validation
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+
+    // JWT
+    implementation("io.jsonwebtoken:jjwt-api:0.12.3")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.3")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.3")
 }
 
 tasks.withType<KotlinCompile> {
@@ -59,4 +64,12 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
+}
+
+tasks.bootBuildImage {
+    builder.set("paketobuildpacks/builder-jammy-base:latest")
 }
