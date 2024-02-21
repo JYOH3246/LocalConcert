@@ -56,11 +56,11 @@ class ConcertServiceImpl(
         saveRanking(title)
         if (redisConcertRepository.exists("keyword::${title}")) {
             val searching = redisConcertRepository.getZSetValue("keyword::${title}")
-            val concertList : MutableList<Concert> = mutableListOf()
+            val concertList: MutableList<Concert> = mutableListOf()
             for (element in searching) {
                 val mapper = mapper.objectMapper()
                 redisConcertRepository.saveZSetData("keyword::${title}", element)
-                concertList+=mapper.readValue(element.toString(),Concert::class.java)
+                concertList += mapper.readValue(element.toString(), Concert::class.java)
             }
             return concertList.map { SearchConcertResponse.fromEntity(it) }
         } else {
@@ -80,6 +80,7 @@ class ConcertServiceImpl(
     fun saveRanking(title: String) {
         return redisConcertRepository.saveZSetData("searchRanking", title)
     }
+
     override fun searchRanking(): Set<Any> {
         return redisConcertRepository.getSearchRanking("searchRanking")
     }

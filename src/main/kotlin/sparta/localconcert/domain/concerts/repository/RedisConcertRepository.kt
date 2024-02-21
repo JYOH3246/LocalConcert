@@ -21,8 +21,9 @@ class RedisConcertRepository(
         redisTemplate.opsForZSet().addIfAbsent(key, value, 0.0)
         redisTemplate.opsForZSet().incrementScore(key, value, 1.0)
     }
-    fun getZSetValue(key: String) : Set<Any> {
-        return redisTemplate.opsForZSet().range(key,0,-1) ?: throw IllegalArgumentException("없음")
+
+    fun getZSetValue(key: String): Set<Any> {
+        return redisTemplate.opsForZSet().range(key, 0, -1) ?: throw IllegalArgumentException("없음")
     }
 
     fun saveZSetJsonData(key: String, data: List<Any>) {
@@ -44,8 +45,9 @@ class RedisConcertRepository(
     fun unionZSets() {
         redisTemplate.opsForZSet().unionAndStore("empty", searchKey(), "postRanking", Aggregate.SUM)
     }
-    fun getSearchRanking(key: String) : Set<Any> {
-        val rank = redisTemplate.opsForZSet().reverseRange(key,0,-1)?: throw IllegalArgumentException("없음")
+
+    fun getSearchRanking(key: String): Set<Any> {
+        val rank = redisTemplate.opsForZSet().reverseRange(key, 0, -1) ?: throw IllegalArgumentException("없음")
         return rank
     }
 
