@@ -15,7 +15,7 @@ import sparta.localconcert.domain.concerts.repository.ConcertRepository
 @Service
 class ConcertServiceImpl(
     private val concertRepository: ConcertRepository,
-    ) : ConcertService {
+) : ConcertService {
 
     @Transactional
     override fun addConcert(request: AddConcertRequest) {
@@ -38,8 +38,8 @@ class ConcertServiceImpl(
 
 
     @Transactional
-    override fun searchConcert(keyword: String): List<SearchConcertResponse> {
-        val concerts = concertRepository.searchConcertByTitle(keyword)
+    override fun searchConcert(keyword: String, page: Int, size: Int): List<SearchConcertResponse> {
+        val concerts = concertRepository.searchConcertByTitle(keyword, page, size)
         concerts.forEach {
             it.searches += 1
             concertRepository.save(it)
@@ -48,9 +48,9 @@ class ConcertServiceImpl(
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(value = ["concert"], key = "#title")
-    override fun searchCacheConcert(title: String): List<SearchConcertResponse> {
-        return concertRepository.searchConcertByTitle(title).map { SearchConcertResponse.fromEntity(it) }
+    @Cacheable(value = ["concert"], key = "#keyword")
+    override fun searchCacheConcert(keyword: String, page: Int, size: Int): List<SearchConcertResponse> {
+        return concertRepository.searchConcertByTitle(keyword, page, size).map { SearchConcertResponse.fromEntity(it) }
     }
 
     @Transactional

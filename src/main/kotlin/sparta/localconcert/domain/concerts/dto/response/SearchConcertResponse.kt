@@ -10,8 +10,8 @@ data class SearchConcertResponse(
     val startDate: LocalDate,
     val endDate: LocalDate,
     val isPriced: Boolean,
-){
-    companion object{
+) {
+    companion object {
         fun fromEntity(concert: Concert) = SearchConcertResponse(
             id = concert.id,
             title = concert.title,
