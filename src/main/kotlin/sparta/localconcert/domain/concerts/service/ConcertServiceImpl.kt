@@ -52,20 +52,20 @@ class ConcertServiceImpl(
 
     // Local Cache to Redis
     @Transactional(readOnly = true)
-    override fun searchCacheConcert(title: String): List<SearchConcertResponse> {
-        saveRanking(title)
-        if (redisConcertRepository.exists("keyword::${title}")) {
-            val searching = redisConcertRepository.getZSetValue("keyword::${title}")
+    override fun searchCacheConcert(keyword: String): List<SearchConcertResponse> {
+        saveRanking(keyword)
+        if (redisConcertRepository.exists("keyword::${keyword}")) {
+            val searching = redisConcertRepository.getZSetValue("keyword::${keyword}")
             val concertList: MutableList<Concert> = mutableListOf()
             for (element in searching) {
                 val mapper = mapper.objectMapper()
-                redisConcertRepository.saveZSetData("keyword::${title}", element)
+                redisConcertRepository.saveZSetData("keyword::${keyword}", element)
                 concertList += mapper.readValue(element.toString(), Concert::class.java)
             }
             return concertList.map { SearchConcertResponse.fromEntity(it) }
         } else {
-            val searching = concertRepository.searchConcertByTitle(title)
-            redisConcertRepository.saveZSetJsonData("keyword::${title}", searching)
+            val searching = concertRepository.searchConcertByTitle(keyword)
+            redisConcertRepository.saveZSetJsonData("keyword::${keyword}", searching)
             return searching.map { SearchConcertResponse.fromEntity(it) }
         }
     }

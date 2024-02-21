@@ -15,7 +15,7 @@ interface ConcertService {
 
     fun searchConcert(keyword: String): List<SearchConcertResponse>
 
-    fun searchCacheConcert(title: String): List<SearchConcertResponse>
+    fun searchCacheConcert(keyword: String): List<SearchConcertResponse>
 
     fun findConcert(concertId: Long): FindConcertResponse
     fun searchRanking(): Set<Any>
