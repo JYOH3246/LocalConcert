@@ -1,6 +1,8 @@
 package sparta.localconcert.domain.concerts.service
 
 import org.springframework.cache.annotation.Cacheable
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -41,9 +43,9 @@ class ConcertServiceImpl(
     }
 
 
-    @Transactional
-    override fun searchConcert(keyword: String, page: Int, size: Int): List<SearchConcertResponse> {
-        val concerts = concertRepository.searchConcertByTitle(keyword, page, size)
+    @Transactional(readOnly = true)
+    override fun searchConcert(keyword: String, pageable: Pageable): Page<SearchConcertResponse> {
+        val concerts = concertRepository.searchConcertByTitle(keyword, pageable)
         concerts.forEach {
             it.searches += 1
             concertRepository.save(it)
@@ -53,7 +55,7 @@ class ConcertServiceImpl(
 
     // Local Cache to Redis
     @Transactional(readOnly = true)
-    override fun searchCacheConcert(keyword: String, page: Int, size: Int): List<SearchConcertResponse> {
+    override fun searchCacheConcert(keyword: String, pageable: Pageable): Page<SearchConcertResponse> {
         saveRanking(keyword)
         if (redisConcertRepository.exists("keyword::${keyword}")) {
             val searching = redisConcertRepository.getZSetValue("keyword::${keyword}")
@@ -65,7 +67,7 @@ class ConcertServiceImpl(
             }
             return concertList.map { SearchConcertResponse.fromEntity(it) }
         } else {
-            val searching = concertRepository.searchConcertByTitle(keyword)
+            val searching = concertRepository.searchConcertByTitle(keyword, pageable)
             redisConcertRepository.saveZSetJsonData("keyword::${keyword}", searching)
             return searching.map { SearchConcertResponse.fromEntity(it) }
         }

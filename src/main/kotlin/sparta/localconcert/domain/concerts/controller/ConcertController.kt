@@ -1,5 +1,8 @@
 package sparta.localconcert.domain.concerts.controller
 
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -10,6 +13,7 @@ import sparta.localconcert.domain.concerts.dto.response.SearchConcertResponse
 import sparta.localconcert.domain.concerts.service.ConcertService
 import sparta.localconcert.global.aop.LogExecutionTime
 
+
 @RequestMapping("/concerts")
 @RestController
 class ConcertController(
@@ -19,24 +23,22 @@ class ConcertController(
     @GetMapping()
     fun searchConcert(
         @RequestParam(name = "keyword") keyword: String,
-        @RequestParam(name = "page", defaultValue = "1") page: Int,
-        @RequestParam(name = "size", defaultValue = "10") size: Int
-    ): ResponseEntity<List<SearchConcertResponse>> {
+        @PageableDefault(size = 10, sort = ["id"]) pageable: Pageable
+    ): ResponseEntity<Page<SearchConcertResponse>> {
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(concertService.searchConcert(keyword, page, size))
+            .body(concertService.searchConcert(keyword, pageable))
     }
 
     @LogExecutionTime
     @GetMapping("/v2")
     fun searchCacheConcert(
         @RequestParam(name = "keyword") keyword: String,
-        @RequestParam(name = "page", defaultValue = "1") page: Int,
-        @RequestParam(name = "size", defaultValue = "10") size: Int
-    ): ResponseEntity<List<SearchConcertResponse>> {
+        @PageableDefault(size = 10, sort = ["id"]) pageable: Pageable
+    ): ResponseEntity<Page<SearchConcertResponse>> {
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(concertService.searchCacheConcert(keyword, page, size))
+            .body(concertService.searchCacheConcert(keyword, pageable))
     }
 
     @GetMapping("/{concertId}")
