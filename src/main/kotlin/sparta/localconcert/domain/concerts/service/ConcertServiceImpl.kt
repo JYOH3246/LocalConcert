@@ -13,6 +13,8 @@ import sparta.localconcert.domain.concerts.dto.response.FindConcertResponse
 import sparta.localconcert.domain.concerts.dto.response.SearchConcertResponse
 import sparta.localconcert.domain.concerts.model.Concert
 import sparta.localconcert.domain.concerts.repository.ConcertRepository
+import sparta.localconcert.global.dto.BaseResponseCode
+import sparta.localconcert.global.exception.BaseException
 
 
 @Service
@@ -28,14 +30,14 @@ class ConcertServiceImpl(
     @Transactional
     override fun updateConcert(request: UpdateConcertRequest, concertId: Long) {
         val concert = concertRepository.findByIdOrNull(concertId)
-            ?: throw Exception("임시처리입니다.")
+            ?: throw BaseException(BaseResponseCode.INVALID_CONCERT)
         concert.update(request)
     }
 
     @Transactional
     override fun deleteConcert(concertId: Long) {
         val concert = concertRepository.findByIdOrNull(concertId)
-            ?: throw Exception("임시처리입니다.")
+            ?: throw BaseException(BaseResponseCode.INVALID_CONCERT)
         concertRepository.delete(concert)
     }
 
@@ -59,7 +61,7 @@ class ConcertServiceImpl(
     @Transactional
     override fun findConcert(concertId: Long): FindConcertResponse {
         val concert = concertRepository.findByIdOrNull(concertId)
-            ?: throw Exception("임시처리입니다.")
+            ?: throw BaseException(BaseResponseCode.INVALID_CONCERT)
         return FindConcertResponse.fromEntity(concert)
     }
 }
