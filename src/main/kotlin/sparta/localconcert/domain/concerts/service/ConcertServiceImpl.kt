@@ -1,6 +1,6 @@
 package sparta.localconcert.domain.concerts.service
 
-import org.springframework.cache.annotation.Cacheable
+import com.fasterxml.jackson.core.type.TypeReference
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional
 import sparta.localconcert.domain.concerts.dto.request.AddConcertRequest
 import sparta.localconcert.domain.concerts.dto.request.UpdateConcertRequest
 import sparta.localconcert.domain.concerts.dto.request.toEntity
+import sparta.localconcert.domain.concerts.dto.response.CustomPageImpl
 import sparta.localconcert.domain.concerts.dto.response.FindConcertResponse
 import sparta.localconcert.domain.concerts.dto.response.SearchConcertResponse
 import sparta.localconcert.domain.concerts.model.Concert
@@ -45,32 +46,49 @@ class ConcertServiceImpl(
 
     @Transactional(readOnly = true)
     override fun searchConcert(keyword: String, pageable: Pageable): Page<SearchConcertResponse> {
+
         val concerts = concertRepository.searchConcertByTitle(keyword, pageable)
+        /*
         concerts.forEach {
             it.searches += 1
             concertRepository.save(it)
         }
-        return concerts.map { SearchConcertResponse.fromEntity(it) }
+
+         */
+        return concerts
+
     }
 
     // Local Cache to Redis
     @Transactional(readOnly = true)
-    override fun searchCacheConcert(keyword: String, pageable: Pageable): Page<SearchConcertResponse> {
+    override fun searchCacheConcert(keyword: String, pageable: Pageable): CustomPageImpl<SearchConcertResponse> {
         saveRanking(keyword)
-        if (redisConcertRepository.exists("keyword::${keyword}")) {
-            val searching = redisConcertRepository.getZSetValue("keyword::${keyword}")
-            val concertList: MutableList<Concert> = mutableListOf()
-            for (element in searching) {
-                val mapper = mapper.objectMapper()
-                redisConcertRepository.saveZSetData("keyword::${keyword}", element)
-                concertList += mapper.readValue(element.toString(), Concert::class.java)
-            }
-            return concertList.map { SearchConcertResponse.fromEntity(it) }
+
+        if (redisConcertRepository.exists("paging::${keyword}_${pageable.pageNumber}_${pageable.pageSize}")) {
+            val a =
+                redisConcertRepository.getHashValue("paging::${keyword}_${pageable.pageNumber}_${pageable.pageSize}")
+            val mapper = mapper.objectMapper()
+            val c = a.getValue("page").toString()
+            println(c)
+            val b = mapper.readValue(c, object : TypeReference<CustomPageImpl<SearchConcertResponse>>() {})
+            return b
+
         } else {
-            val searching = concertRepository.searchConcertByTitle(keyword, pageable)
+            val searching =
+                concertRepository.searchConcertByTitle(keyword, pageable)
             redisConcertRepository.saveZSetJsonData("keyword::${keyword}", searching)
-            return searching.map { SearchConcertResponse.fromEntity(it) }
+            redisConcertRepository.saveHashJsonData(
+                "paging::${keyword}_${pageable.pageNumber}_${pageable.pageSize}",
+                searching
+            )
+            return searching
         }
+
+        /*
+
+        return searching
+
+         */
     }
 
     @Transactional
@@ -87,6 +105,7 @@ class ConcertServiceImpl(
     override fun searchRanking(): Set<Any> {
         return redisConcertRepository.getSearchRanking("searchRanking")
     }
+
 }
 
 fun Concert.update(request: UpdateConcertRequest) {
@@ -107,5 +126,4 @@ fun Concert.update(request: UpdateConcertRequest) {
     this.ticketUrl = request.ticketUrl
     this.address = request.address
 }
-
 

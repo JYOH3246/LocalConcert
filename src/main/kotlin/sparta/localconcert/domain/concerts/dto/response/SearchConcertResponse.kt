@@ -1,16 +1,19 @@
 package sparta.localconcert.domain.concerts.dto.response
 
+import com.fasterxml.jackson.annotation.JsonCreator
+import com.fasterxml.jackson.annotation.JsonProperty
 import sparta.localconcert.domain.concerts.model.Concert
 import java.time.LocalDate
 
-data class SearchConcertResponse(
-    val id: Long?,
-    val title: String,
-    val location: String,
-    val startDate: LocalDate,
-    val endDate: LocalDate,
-    val isPriced: Boolean,
-) {
+data class SearchConcertResponse @JsonCreator(mode = JsonCreator.Mode.PROPERTIES) constructor(
+    @JsonProperty("id") val id: Long?,
+    @JsonProperty("title") val title: String,
+    @JsonProperty("location") val location: String,
+    @JsonProperty("startDate") val startDate: LocalDate,
+    @JsonProperty("endDate") val endDate: LocalDate,
+    @JsonProperty("priced") val isPriced: Boolean,
+
+    ) {
     companion object {
         fun fromEntity(concert: Concert) = SearchConcertResponse(
             id = concert.id,

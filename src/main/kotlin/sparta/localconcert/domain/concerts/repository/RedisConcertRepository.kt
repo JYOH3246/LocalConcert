@@ -1,6 +1,7 @@
 package sparta.localconcert.domain.concerts.repository
 
 
+import org.springframework.data.domain.Page
 import org.springframework.data.redis.connection.zset.Aggregate
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.stereotype.Repository
@@ -26,15 +27,30 @@ class RedisConcertRepository(
         return redisTemplate.opsForZSet().range(key, 0, -1) ?: throw IllegalArgumentException("없음")
     }
 
-    fun saveZSetJsonData(key: String, data: List<Any>) {
+    fun <T> saveZSetJsonData(key: String, data: Page<T>) {
         val mapper = objectMapper.objectMapper()
-        for (element in data) {
+        for (element in data.content) {
             val value: String = mapper.writeValueAsString(element)
             redisTemplate.opsForZSet().addIfAbsent(key, value, 0.0)
             redisTemplate.opsForZSet().incrementScore(key, value, 1.0)
         }
         searchKey()
         unionZSets()
+    }
+
+    fun <T> saveHashJsonData(key: String, values: Page<T>) {
+        val mapper = objectMapper.objectMapper()
+        val value = mapper.writeValueAsString(values)
+        val a = mapOf(
+            "page" to value,
+        )
+        redisTemplate.opsForHash<String, Any>().putAll(key, a)
+    }
+
+    fun getHashValue(key: String): Map<String, Any> {
+        val a = redisTemplate.opsForHash<String, Any>().entries(key)
+        return a
+
     }
 
     fun searchKey(): Set<String> {
