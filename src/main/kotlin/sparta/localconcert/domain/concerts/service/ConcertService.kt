@@ -20,4 +20,7 @@ interface ConcertService {
     fun searchCacheConcert(keyword: String, pageable: Pageable): Page<SearchConcertResponse>
 
     fun findConcert(concertId: Long): FindConcertResponse
+    fun searchRanking(): Set<Any>
+
+
 }

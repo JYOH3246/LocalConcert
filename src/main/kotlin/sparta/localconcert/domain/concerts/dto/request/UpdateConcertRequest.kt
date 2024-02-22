@@ -1,6 +1,7 @@
 package sparta.localconcert.domain.concerts.dto.request
 
 import io.swagger.v3.oas.annotations.media.Schema
+import sparta.localconcert.domain.concerts.model.Concert
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -24,3 +25,24 @@ data class UpdateConcertRequest(
     val ticketUrl: String,
     val address: String,
 )
+
+fun UpdateConcertRequest.toEntity(): Concert {
+    return Concert(
+        title = this.title,
+        location = this.location,
+        contents = this.contents,
+        startDate = this.startDate,
+        endDate = this.endDate,
+        startTime = this.startTime,
+        endTime = this.endTime,
+        isPriced = this.isPriced,
+        host = this.host,
+        organizer = this.organizer,
+        price = this.price,
+        ratings = this.ratings,
+        notice = this.notice,
+        pageUrl = this.pageUrl,
+        ticketUrl = this.ticketUrl,
+        address = this.address
+    )
+}

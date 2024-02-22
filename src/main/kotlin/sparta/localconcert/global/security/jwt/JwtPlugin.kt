@@ -17,7 +17,7 @@ class JwtPlugin(
     @Value("\${auth.jwt.issuer}") private val issuer: String,
     @Value("\${auth.jwt.secret}") private val secret: String,
     @Value("\${auth.jwt.accessTokenExpirationHour}") private val accessTokenExpirationHour: Long,
-    @Value("24") private val refreshTokenExpirationHour: Long,
+    @Value("\${auth.jwt.refreshTokenExpirationHour}") private val refreshTokenExpirationHour: Long,
 
     private val adminRefreshTokenRepository: AdminRefreshTokenRepository
 ) {

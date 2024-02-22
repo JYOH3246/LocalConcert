@@ -71,4 +71,9 @@ class ConcertController(
             .status(HttpStatus.OK)
             .build()
     }
+
+    @GetMapping("/v2/ranking")
+    fun searchRanking(): ResponseEntity<Set<Any>> {
+        return ResponseEntity.status(HttpStatus.OK).body(concertService.searchRanking())
+    }
 }
