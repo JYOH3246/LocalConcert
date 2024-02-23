@@ -13,7 +13,7 @@ class AdminRefreshToken(
     @JoinColumn(name = "id")
     var admin: Admin,
 
-) {
+    ) {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

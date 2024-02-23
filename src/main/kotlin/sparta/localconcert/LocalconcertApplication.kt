@@ -9,5 +9,5 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing
 class LocalconcertApplication
 
 fun main(args: Array<String>) {
-	runApplication<LocalconcertApplication>(*args)
+    runApplication<LocalconcertApplication>(*args)
 }

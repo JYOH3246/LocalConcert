@@ -6,8 +6,7 @@ import sparta.localconcert.domain.keyword.model.QKeyword
 import sparta.localconcert.global.querydsl.QueryDslSupport
 
 @Repository
-class KeywordRepositoryImpl(
-) : CustomKeywordRepository, QueryDslSupport() {
+class KeywordRepositoryImpl : CustomKeywordRepository, QueryDslSupport() {
     private val keyword = QKeyword.keyword1
     override fun findTopKeywords(page: Int, size: Int): List<Keyword> {
         return queryFactory.selectFrom(keyword)

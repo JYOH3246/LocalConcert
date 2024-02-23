@@ -31,13 +31,16 @@ class SecurityConfig(
                 it.requestMatchers(AntPathRequestMatcher("/api/admins/login")).permitAll()
                 it.requestMatchers(AntPathRequestMatcher("/swagger-ui/**")).permitAll()
                 it.requestMatchers(AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
-                    .anyRequest().authenticated()
+                    .anyRequest().permitAll()
             }
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
+            /*
             .exceptionHandling {
                 it.authenticationEntryPoint(authenticationEntryPoint)
                 it.accessDeniedHandler(accessDeniedHandler)
             }
+
+             */
             .build()
     }
 }
