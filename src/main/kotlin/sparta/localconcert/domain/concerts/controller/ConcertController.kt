@@ -38,7 +38,7 @@ class ConcertController(
     ): ResponseEntity<Page<SearchConcertResponse>> {
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(concertService.searchCacheConcert(keyword, pageable))
+            .body(concertService.searchAopConcert(keyword, pageable))
     }
 
     @GetMapping("/{concertId}")

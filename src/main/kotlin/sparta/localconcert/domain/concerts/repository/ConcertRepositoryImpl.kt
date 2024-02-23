@@ -15,13 +15,6 @@ class ConcertRepositoryImpl : CustomConcertRepository, QueryDslSupport() {
 
     override fun searchConcertByTitle(keyword: String, pageable: Pageable): CustomPageImpl<SearchConcertResponse> {
         val totalCount = queryFactory.select(concert.count()).from(concert).fetchOne() ?: 0L
-        /*
-        val query = queryFactory.selectFrom(concert)
-            .where(concert.title.containsIgnoreCase(keyword))
-            .offset(pageable.offset)
-            .limit(pageable.pageSize.toLong())
-                val id: Long?,
-         */
         val query = queryFactory.select(
             Projections.constructor(
                 SearchConcertResponse::class.java,
