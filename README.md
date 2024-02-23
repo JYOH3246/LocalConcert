@@ -9,7 +9,7 @@
 - **프로젝트 이름** : LocalConcert
 - **프로젝트 설명 :** 공연의 목록을 검색하고, 인기 공연을 확인합니다.
 
-## 👩 Team B05
+## A04
 
 - <strong>오재영</strong>
     - [github](https://github.com/JYOH3246)
@@ -76,6 +76,13 @@
 ## 프로젝트 산출물
 
 - [프로젝트 S.A]
+https://teamsparta.notion.site/A4-6084c4a6a76f4b28a0337970f1126e84
 - [와이어프레임]
+ <img src ="./img/대용량 서비스.png" >
+ <img src ="./img/대용량 어드민.png" >
 - [API 명세서]
+ <img src ="./img/대용량API1.png" >
+ <img src ="./img/대용량API2.png" >
+ <img src ="./img/대용량API3.png" >
 - [ERD]
+ <img src ="./img/new.png" >
